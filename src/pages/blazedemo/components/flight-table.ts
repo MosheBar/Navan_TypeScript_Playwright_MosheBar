@@ -1,5 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 import { extractNumericValue } from '../../../utils/common';
+import { GenericTable } from '../../../utils/ui/generic-table';
 
 export interface FlightRow {
     price: number;
@@ -8,33 +9,24 @@ export interface FlightRow {
     select: () => Promise<void>;
 }
 
-export class FlightTable {
-    private readonly rows: Locator;
+export class FlightTable extends GenericTable<FlightRow> {
     private readonly priceSelector = 'input[name="price"]';
     private readonly flightSelector = 'input[name="flight"]';
     private readonly selectButtonSelector = 'input[type="submit"]';
 
     constructor(page: Page) {
-        this.rows = page.locator('table.table tbody tr');
+        super(page.locator('table.table tbody tr'));
     }
 
-    async parseAllRows(): Promise<FlightRow[]> {
-        await this.rows.first().waitFor();
-        const rowElements = await this.rows.all();
-        const flightRows: FlightRow[] = [];
+    protected async mapRow(row: Locator): Promise<FlightRow> {
+        const flightNumber = await row.locator(this.flightSelector).inputValue();
+        const priceText = await row.locator(this.priceSelector).inputValue();
 
-        for (const row of rowElements) {
-            const flightNumber = await row.locator(this.flightSelector).inputValue();
-            const priceText = await row.locator(this.priceSelector).inputValue();
-            
-            flightRows.push({
-                price: extractNumericValue(priceText),
-                priceText,
-                flightNumber,
-                select: async () => await row.locator(this.selectButtonSelector).click()
-            });
-        }
-
-        return flightRows;
+        return {
+            price: extractNumericValue(priceText),
+            priceText,
+            flightNumber,
+            select: async () => await row.locator(this.selectButtonSelector).click()
+        };
     }
 }
