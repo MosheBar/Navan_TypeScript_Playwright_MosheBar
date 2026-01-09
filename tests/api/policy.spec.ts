@@ -23,7 +23,7 @@ test.describe('Policy Engine API Tests', () => {
             job: JobTitle.Manager
         };
         
-        const response = await api.createUser(payload, true);
+        const response = await api.createUser(payload);
 
         expect(response.status).toBe(201);
         expect(response.json.name).toBe(payload.name);
@@ -41,7 +41,7 @@ test.describe('Policy Engine API Tests', () => {
             job: JobTitle.Intern
         };
 
-        const response = await api.createUser(payload, true);
+        const response = await api.createUser(payload);
 
         expect(response.status).toBe(201);
         printPolicyDecision(response.json.job);
@@ -53,7 +53,7 @@ test.describe('Policy Engine API Tests', () => {
             name: 'Charlie'
         };
 
-        const response = await api.createUser(payload, true);
+        const response = await api.createUser(payload);
         
         expect(response.status).toBe(201);
         
@@ -70,7 +70,7 @@ test.describe('Policy Engine API Tests', () => {
             job: 'BlaBla'
         };
 
-        const response = await api.createUser(payload, true);
+        const response = await api.createUser(payload);
         
         expect(response.status).toBe(201);
 

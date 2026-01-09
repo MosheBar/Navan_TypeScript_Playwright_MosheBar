@@ -8,16 +8,16 @@ export class ReqResApi {
 
     private readonly baseApiUrl = 'https://reqres.in/api';
     private readonly createUsersUrl = `${this.baseApiUrl}/users`;
+    private readonly apiKey = "reqres_2eb7d0b33fd8431fae3990a6841245b3";
 
     /**
      * Creates a new user in the system. 
-     * Defaults to a mock implementation to bypass external API 403 restrictions.
      * 
      * @param payload - Object containing the user's name and job title.
-     * @param useMock - Set to `false` to attempt a real API call. Default is `true`.
+     * @param useMock - Set to `true` to attempt a mock API call. Default is `false`.
      * @returns A Promise resolving to the standardized ApiResponse.
      */
-    async createUser(payload: { name: string, job?: JobTitle | string }, useMock: boolean = true): Promise<ApiResponse> {
+    async createUser(payload: { name: string, job?: JobTitle | string }, useMock: boolean = false): Promise<ApiResponse> {
         let response: ApiResponse;
         if (useMock) {
             response = await mockApiPost(this.createUsersUrl, payload, {
@@ -28,7 +28,8 @@ export class ReqResApi {
             const responseApi = await this.request.post(this.createUsersUrl, {
                 data: payload,
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    "x-api-key": this.apiKey
                 }
             });
 
