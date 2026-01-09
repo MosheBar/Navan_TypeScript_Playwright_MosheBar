@@ -1,18 +1,15 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from '../base.page';
 import { FlightDetails } from '../../utils/ui/types';
-import { extractNumericValue } from '../../utils/common';
+import { FlightTable } from './components/flight-table';
 
 export class ReservePage extends BasePage {
-    private readonly tableRows: Locator;
+    private readonly flightTable: FlightTable;
     private readonly pageTitle = 'BlazeDemo - reserve';
-    private readonly tablePrice = 'input[name="price"]';
-    private readonly tableFlightNumber = 'input[name="flight"]';
-    private readonly tableSelectFlight = 'input[type="submit"]';
 
     constructor(page: Page) {
         super(page);
-        this.tableRows = page.locator('table.table tbody tr');
+        this.flightTable = new FlightTable(page);
     }
 
     async validatePage(): Promise<void> {
@@ -20,38 +17,22 @@ export class ReservePage extends BasePage {
     }
 
     async selectCheapestFlight(click: boolean = true): Promise<FlightDetails> {
-        await this.tableRows.first().waitFor();
+        const rows = await this.flightTable.parseAllRows();
 
-        const rows = await this.tableRows.all();
-    
-        let minPrice = Number.MAX_VALUE;
-        let winningRow: Locator | null = null;
-        let capturedPriceText = '';
-        let capturedFlightNumber = '';
-
-        for (const row of rows) {
-            const flightValue = await row.locator(this.tableFlightNumber).inputValue();
-            const priceValue = await row.locator(this.tablePrice).inputValue();
-            const price = extractNumericValue(priceValue);
-
-            if (price < minPrice) {
-                minPrice = price;
-                winningRow = row;
-                capturedPriceText = priceValue;
-                capturedFlightNumber = flightValue;
-            }
-        }
-
-        if (!winningRow) {
+        if (rows.length === 0) {
             throw new Error('No flights found in the table');
         }
 
-        if (click && winningRow){
-            await winningRow.locator(this.tableSelectFlight).click();
+        // Sort by price ascending
+        const cheapestFlight = rows.sort((a, b) => a.price - b.price)[0];
+
+        if (click) {
+            await cheapestFlight.select();
         }
+
         return {
-            price: `$${capturedPriceText}`, 
-            flightNumber: capturedFlightNumber
+            price: `$${cheapestFlight.priceText}`, 
+            flightNumber: cheapestFlight.flightNumber
         };
     }
 }
