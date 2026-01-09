@@ -17,7 +17,7 @@ export class ReservePage extends BasePage {
     }
 
     async selectCheapestFlight(click: boolean = true): Promise<FlightDetails> {
-        const rows = await this.flightTable.getAllRows();
+        const rows = await this.flightTable.getRows();
 
         if (rows.length === 0) {
             throw new Error('No flights found in the table');

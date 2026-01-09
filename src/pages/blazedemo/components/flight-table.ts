@@ -15,7 +15,10 @@ export class FlightTable extends GenericTable<FlightRow> {
     private readonly selectButtonSelector = 'input[type="submit"]';
 
     constructor(page: Page) {
-        super(page.locator('table.table tbody tr'));
+        super({
+            headers: page.locator('table.table thead th'),
+            rows: page.locator('table.table tbody tr')
+        });
     }
 
     protected async mapRow(row: Locator): Promise<FlightRow> {
