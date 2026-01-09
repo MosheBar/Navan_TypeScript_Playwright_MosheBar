@@ -26,7 +26,7 @@ export interface PassengerDetails {
     city: string;
     state: string;
     zipCode: string;
-    cardType: 'Visa' | 'Amex' | 'Diner\'s Club';
+    cardType: 'Visa' | 'American Express' | 'Diner\'s Club';
     cardNumber: string;
     cardMonth: string;
     cardYear: string;

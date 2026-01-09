@@ -5,16 +5,31 @@ import { PurchasePage } from '../pages/blazedemo/purchase.page';
 import { ConfirmationPage } from '../pages/blazedemo/confirmation.page';
 
 type MyFixtures = {
-    blazedemoPage: BlazedemoPage;
+    blazeDemo: {
+        blazeDemoPage: BlazedemoPage;
+        reservePage: ReservePage;
+        purchasePage: PurchasePage;
+        confirmationPage: ConfirmationPage;
+    };
 };
 
 export const test = base.extend<MyFixtures>({
-    blazedemoPage: async ({ page }, use) => {
-        const blazedemoPage = new BlazedemoPage(page);
-        await blazedemoPage.navigate();
-        await blazedemoPage.validatePage();
-        await use(blazedemoPage);
+    blazeDemo: async ({ page }, use) => {
+        const blazeDemoPage = new BlazedemoPage(page);
+        const reservePage = new ReservePage(page);
+        const purchasePage = new PurchasePage(page);
+        const confirmationPage = new ConfirmationPage(page);
+
+        await blazeDemoPage.navigate();
+        
+        await use({
+            blazeDemoPage,
+            reservePage,
+            purchasePage,
+            confirmationPage
+        });
     },
 });
 
 export { expect } from '@playwright/test';
+
