@@ -1,6 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
 import { config as alphaConfig } from './config/config.alpha';
 import { config as productionConfig } from './config/config.production';
+
+// Load environment variables from .env file
+dotenv.config();
 
 /**
  * Use process.env to manage secrets/variables if needed.

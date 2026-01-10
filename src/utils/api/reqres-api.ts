@@ -1,6 +1,7 @@
 import { APIRequestContext } from '@playwright/test';
 import { mockApiPost } from './mock-api-client';
 import { JobTitle, ApiResponse } from './types';
+import { config } from '../../../config/config';
 
 export class ReqResApi {
     
@@ -8,7 +9,7 @@ export class ReqResApi {
 
     private readonly baseApiUrl = 'https://reqres.in/api';
     private readonly createUsersUrl = `${this.baseApiUrl}/users`;
-    private readonly apiKey = "reqres_2eb7d0b33fd8431fae3990a6841245b3";
+    private readonly apiKey = config.reqResApiKey;
 
     /**
      * Creates a new user in the system. 
